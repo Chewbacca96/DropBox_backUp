@@ -2,7 +2,8 @@
     return [
         'dropBox' => [
             'accessToken'      => 'Q7KaXToc6uAAAAAAAAAADtUP3I20fyZaA7qoXxsklN-Mez4l-RwjCFirR73poe3N',
-            'clientIdentifier' => 'User'
+            'clientIdentifier' => 'User',
+            'backUpFolder'     => 'backUp_test_folder/'
         ],
         'archive' => [
             'pathToFile'    => 'backUp_test/*',
