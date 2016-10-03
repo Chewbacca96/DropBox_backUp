@@ -9,17 +9,17 @@ class Archive extends \ZipArchive
     private $path;
 
     /**
-     * Archive constructor.
+     * Archive constructor
      *
      * @param string $pathToFile путь к файлу, который нужно добавить в архив
      * @param string $pathToArchive путь к директории, в которой будет создан архив
      *
-     * @throws 
+     * @throws WriteException выбрасыватсья при отсутствии прав на запись в директории
      */
     function __construct($pathToFile, $pathToArchive)
     {
         if (!is_writable($pathToArchive)) {
-            throw new WriteException('Cant write archive to this path. Access denied.');
+            throw new WriteException('Cant write archive to this folder. Access denied.');
         }
 
         $this->name = date('d-m-Y_G-i-s') . '.zip';

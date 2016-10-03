@@ -1,6 +1,8 @@
 <?php
 namespace DropBox_backUp;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use DropBox_backUp\exceptions\WriteException;
 use DropBox_backUp\models\Archive;
 use DropBox_backUp\models\MyClient;
@@ -9,8 +11,6 @@ require 'vendor\autoload.php';
 $config = require 'config.php';
 
 ini_set('max_execution_time', 0);
-ini_set('log_errors', 'On');
-ini_set('error_log', $config['errorLog']);
 
 /**
  * Задание:
@@ -32,9 +32,12 @@ ini_set('error_log', $config['errorLog']);
  * Ошибки записывать в syslog
  * Добавить лог в конце уровня info о выполненной работе скрипта (monolog)
  *
- * Раздельные процессы архивация - загрузка - удаление
+ * +Раздельные процессы архивация - загрузка - удаление
  * Передача скрипту пути к config.php параметром при запуске
  */
+
+$log = new Logger('Log');
+$log->pushHandler(new StreamHandler('php_errors.log', Logger::DEBUG));
 
 try {
     $archive = new Archive(
@@ -42,7 +45,7 @@ try {
         $config['archive']['pathToArchive']
     );
 } catch (WriteException $e) {
-    error_log('Error: ' . $e->getMessage());
+    $log->error('Error: ' . $e->getMessage());
     exit();
 }
 
@@ -59,7 +62,7 @@ try {
         unlink($archivePath);
     }
 } catch (\Exception $e) {
-    error_log('Error: ' . $e->getMessage());
+    $log->error('Error: ' . $e->getMessage());
 }
 
 echo "\nI'm done!";

@@ -1,6 +1,7 @@
 {
 	"require": {
-		"dropbox/dropbox-sdk": "dev-master"
+		"dropbox/dropbox-sdk": "dev-master",
+		"monolog/monolog": "1.21.0"
 	},
 
 	"autoload": {
