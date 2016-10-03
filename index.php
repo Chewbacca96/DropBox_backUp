@@ -62,6 +62,4 @@ try {
     error_log('Error: ' . $e->getMessage());
 }
 
-echo is_writable($config['archive']['pathToArchive']);
-
 echo "\nI'm done!";
