@@ -2,8 +2,9 @@
 namespace DropBox_backUp\models;
 
 use DropBox_backUp\exceptions\WriteException;
+use ZipArchive;
 
-class Archive extends \ZipArchive
+class Archive extends ZipArchive
 {
     private $name;
     private $path;
@@ -11,12 +12,12 @@ class Archive extends \ZipArchive
     /**
      * Archive constructor
      *
-     * @param string $pathToFile путь к файлу, который нужно добавить в архив
+     * @param string $pathToSource путь к данным, которые нужно добавить в архив
      * @param string $pathToArchive путь к директории, в которой будет создан архив
      *
      * @throws WriteException выбрасыватсья при отсутствии прав на запись в директории
      */
-    function __construct($pathToFile, $pathToArchive)
+    function __construct($pathToSource, $pathToArchive)
     {
         if (!is_writable($pathToArchive)) {
             throw new WriteException('Cant write archive to this folder. Access denied.');
@@ -26,7 +27,7 @@ class Archive extends \ZipArchive
         $this->path = $pathToArchive . $this->name;
 
         $this->open($this->path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
-        $this->addGlob($pathToFile);
+        $this->addGlob($pathToSource);
         $this->close();
     }
 

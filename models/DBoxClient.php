@@ -1,7 +1,9 @@
 <?php
 namespace DropBox_backUp\models;
 
-class MyClient extends \Dropbox\Client
+use Dropbox\Client;
+
+class DBoxClient extends Client
 {
     /**
      * Функция загружает файл на DropBox
@@ -14,6 +16,9 @@ class MyClient extends \Dropbox\Client
     public function setToDropBox($pathToArchive, $folder)
     {
         $f = fopen($pathToArchive, 'rb');
-        return $this->uploadFile("/$folder", \Dropbox\WriteMode::add(), $f);
+        $metaData = $this->uploadFile("/$folder", \Dropbox\WriteMode::add(), $f);
+        fclose($f);
+        
+        return $metaData;
     }
 }

@@ -5,7 +5,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use DropBox_backUp\exceptions\WriteException;
 use DropBox_backUp\models\Archive;
-use DropBox_backUp\models\MyClient;
+use DropBox_backUp\models\DBoxClient;
 
 require 'vendor\autoload.php';
 $config = require 'config.php';
@@ -18,30 +18,19 @@ ini_set('max_execution_time', 0);
  * Загрузка архива на DropBox
  *
  * Правки:
- * +Передавать параметры явно а не массивом
- * +Писать комментарии перед функциями
- * +Каждый экземпляр класса по сути отдельный массив
- * +Путь для места куда создавать массив
- * +Возможность архивировать папку
- * +Проверка на наличие прав на запись архива в указанную директорию
- *
- * +Возможность загружать архив в особенную папку на DropBox
- * +Если файл не загрузился то он не удаляется
- *
  * Изучить библиотеку monolog
  * Ошибки записывать в syslog
  * Добавить лог в конце уровня info о выполненной работе скрипта (monolog)
  *
- * +Раздельные процессы архивация - загрузка - удаление
  * Передача скрипту пути к config.php параметром при запуске
  */
 
 $log = new Logger('Log');
-$log->pushHandler(new StreamHandler('php_errors.log', Logger::DEBUG));
+$log->pushHandler(new StreamHandler($config['errorLog'], Logger::DEBUG));
 
 try {
     $archive = new Archive(
-        $config['archive']['pathToFile'],
+        $config['archive']['pathToSource'],
         $config['archive']['pathToArchive']
     );
 } catch (WriteException $e) {
@@ -49,7 +38,7 @@ try {
     exit();
 }
 
-$client = new MyClient(
+$client = new DBoxClient(
     $config['dropBox']['accessToken'],
     $config['dropBox']['clientIdentifier']
 );
