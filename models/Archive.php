@@ -3,24 +3,22 @@ namespace DropBox_backUp\models;
 
 class Archive extends \ZipArchive
 {
-    private static $pathToFile;
-    private $archiveName;
-
-    public function __construct($config)
+    /**
+     * Функция создает новый архив
+     *
+     * @param string $pathToFile путь к файлу или папке, которую необходимо добавить в архив
+     * @param string $pathToArchive путь к директории, где будет создан архив
+     * 
+     * @return string имя созданного архива
+     */
+    public function setToArchive($pathToFile, $pathToArchive)
     {
-        if (!self::$pathToFile) {
-            self::$pathToFile = $config['pathToFile'];
-        }
-    }
+        $archiveName = $pathToArchive . date('d-m-Y_G-i-s') . '.zip';
 
-    public function newArchive()
-    {
-        $this->archiveName = date('d-m-Y_G-i-s') . '.zip';
-
-        $this->open($this->archiveName, \ZipArchive::CREATE);
-        $this->addFile(self::$pathToFile);
+        $this->open($archiveName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $this->addGlob($pathToFile);
         $this->close();
 
-        return $this->archiveName;
+        return $archiveName;
     }
 }
