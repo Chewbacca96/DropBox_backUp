@@ -1,6 +1,7 @@
 <?php
 namespace DropBox_backUp;
 
+use DropBox_backUp\exceptions\WriteException;
 use DropBox_backUp\models\Archive;
 use DropBox_backUp\models\MyClient;
 
@@ -22,8 +23,8 @@ ini_set('error_log', $config['errorLog']);
  * +Каждый экземпляр класса по сути отдельный массив
  * +Путь для места куда создавать массив
  * +Возможность архивировать папку
+ * +Проверка на наличие прав на запись архива в указанную директорию
  *
- * Проверка на наличие прав на запись
  * +Возможность загружать архив в особенную папку на DropBox
  * +Если файл не загрузился то он не удаляется
  *
@@ -35,10 +36,16 @@ ini_set('error_log', $config['errorLog']);
  * Передача скрипту пути к config.php параметром при запуске
  */
 
-$archive = new Archive(
-    $config['archive']['pathToFile'],
-    $config['archive']['pathToArchive']
-);
+try {
+    $archive = new Archive(
+        $config['archive']['pathToFile'],
+        $config['archive']['pathToArchive']
+    );
+} catch (WriteException $e) {
+    error_log('Error: ' . $e->getMessage());
+    exit();
+}
+
 $client = new MyClient(
     $config['dropBox']['accessToken'],
     $config['dropBox']['clientIdentifier']
@@ -54,5 +61,7 @@ try {
 } catch (\Exception $e) {
     error_log('Error: ' . $e->getMessage());
 }
+
+echo is_writable($config['archive']['pathToArchive']);
 
 echo "\nI'm done!";

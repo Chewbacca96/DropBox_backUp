@@ -4,7 +4,7 @@ namespace DropBox_backUp\models;
 class MyClient extends \Dropbox\Client
 {
     /**
-     * Функция загружает указанный файл на DropBox
+     * Функция загружает файл на DropBox
      *
      * @param string $pathToArchive путь к файлу, который нужно загрузить
      * @param string $folder директория в которую будет загружен файл
