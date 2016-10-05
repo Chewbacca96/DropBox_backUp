@@ -1,7 +1,8 @@
 {
 	"require": {
 		"dropbox/dropbox-sdk": "dev-master",
-		"monolog/monolog": "1.21.0"
+		"monolog/monolog": "1.21.0",
+		"ifsnop/mysqldump-php":"2.*"
 	},
 
 	"autoload": {

@@ -12,7 +12,6 @@ return [
     'sqlOpt'      => [
         'host'    => 'localhost',
         'db'      => 'motodb2',
-        'charset' => 'UTF8',
         'user'    => 'Chewy',
         'pass'    => '123',
         'dump'    => 'backUp_test/DB.sql'
