@@ -8,7 +8,14 @@ use DropBox_backUp\models\Archive;
 use DropBox_backUp\models\DBoxClient;
 
 require 'vendor\autoload.php';
-$config = require 'config.php';
+
+if ($argv[1]) {
+    $pathToConfig = $argv[1];
+} else {
+    $pathToConfig = 'config.php';
+}
+
+$config = require $pathToConfig;
 
 ini_set('max_execution_time', 0);
 

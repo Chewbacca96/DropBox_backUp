@@ -6,7 +6,14 @@ use Monolog\Handler\StreamHandler;
 use DropBox_backUp\models\Dump;
 
 require 'vendor\autoload.php';
-$config = require 'config.php';
+
+if ($argv[1]) {
+    $pathToConfig = $argv[1];
+} else {
+    $pathToConfig = 'config.php';
+}
+
+$config = require $pathToConfig;
 
 ini_set('max_execution_time', 0);
 
