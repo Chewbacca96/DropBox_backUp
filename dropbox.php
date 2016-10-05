@@ -35,6 +35,8 @@ ini_set('max_execution_time', 0);
 $log = new Logger('Log');
 $log->pushHandler(new StreamHandler($config['errorLog'], Logger::DEBUG));
 
+$log->info('The script started.');
+
 try {
     $archive = new Archive(
         $config['archive']['pathToSource'],
@@ -56,9 +58,11 @@ $archivePath = $archive->getPath();
 try {
     if ($client->setToDropBox($archivePath, $archiveName)) {
         unlink($archivePath);
+        $log->info('Archive uploaded to DropBox.');
     }
 } catch (\Exception $e) {
     $log->error('Error: ' . $e->getMessage());
+    $log->info('Archive is not loaded on DropBox because of an error.');
 }
 
 echo "\nI'm done!";
