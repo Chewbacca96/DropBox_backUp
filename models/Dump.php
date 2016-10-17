@@ -1,42 +1,37 @@
 <?php
 namespace DropBox_backUp\models;
 
-use Ifsnop\Mysqldump\Mysqldump;
+use DropBox_backUp\exceptions\DumpException;
 
-class Dump extends Mysqldump
+class Dump
 {
     /**
-     * Dump constructor.
+     * Функция создает дамп базы данных
      *
-     * @param array $dbOptions массив с опциями для подключения
+     * @param string $host имя хоста базы данных
+     * @param string $usr логин пользователя базы данных
+     * @param string $pass пароль пользователя базы данных
+     * @param string $db имя базы данных
+     * @param string $pathToDump путь к файлу, в который будет записан дамп базы данных
+     *
+     * @return int код выполнения внешней программы
      */
-    public function __construct($dbOptions)
+    public function getDump($host, $usr, $pass, $db, $pathToDump)
     {
-        $host    = $dbOptions['host'];
-        $db      = $dbOptions['db'];
-        $user    = $dbOptions['user'];
-        $pass    = $dbOptions['pass'];
+        $f = fopen($pathToDump, 'w+');
 
-        $options = [
-            \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
-        ];
+        exec("mysqldump --host=$host --user=$usr --password=$pass $db", $dump, $ret);
 
-        parent::__construct("mysql:host=$host;dbname=$db", "$user", "$pass", [], $options);
-    }
+        if ($ret != 0) {
+            throw new DumpException('Cant create dump.'); 
+        }
 
-    /**
-     * Функция делает дамп базы данных
-     *
-     * @param string $pathToFile путь к файлу, который создастся и будет хранить дамп
-     *
-     * @return bool
-     * @throws \Exception
-     */
-    public function getDump($pathToFile)
-    {
-        $f = fopen($pathToFile, 'w+');
-        $this->start($pathToFile);
-        return fclose($f);
+        foreach ($dump as $line) {
+            fwrite($f, $line . "\n");
+        }
+
+        fclose($f);
+
+        return $ret;
     }
 }

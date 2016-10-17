@@ -7,17 +7,11 @@ use DropBox_backUp\exceptions\WriteException;
 use DropBox_backUp\models\Archive;
 use DropBox_backUp\models\DBoxClient;
 
-require 'vendor\autoload.php';
-
-if ($argv[1]) {
-    $pathToConfig = $argv[1];
-} else {
-    $pathToConfig = 'config.php';
-}
-
-$config = require $pathToConfig;
+require 'vendor/autoload.php';
+$config = require (isset($argv[1])) ? $argv[1] : 'config.php';
 
 ini_set('max_execution_time', 0);
+date_default_timezone_set('Europe/Moscow');
 
 /**
  * Задание:
@@ -65,4 +59,4 @@ try {
     $log->info('Archive is not loaded on DropBox because of an error.');
 }
 
-echo "\nI'm done!";
+echo "\nI'm done!\n";

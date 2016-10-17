@@ -6,15 +6,15 @@ return [
         'backUpFolder'     => 'backUp_test_folder/'
     ],
     'archive' => [
-        'pathToSource'  => 'backUp_test/*',
-        'pathToArchive' => 'backUp_test/'
+        'pathToSource'  => '/srv/GitHub/DropBox_backUp/backUp_test/*',
+        'pathToArchive' => '/srv/GitHub/DropBox_backUp/backUp_test/'
     ],
     'sqlOpt'      => [
         'host'    => 'localhost',
         'db'      => 'motodb2',
-        'user'    => 'Chewy',
-        'pass'    => '123',
-        'dump'    => 'backUp_test/DB.sql'
+        'user'    => 'root',
+        'pass'    => '#Data3456^',
+        'dump'    => '/srv/GitHub/DropBox_backUp/backUp_test/DB.sql'
     ],
     'errorLog' => 'php_errors.log'
 ];
