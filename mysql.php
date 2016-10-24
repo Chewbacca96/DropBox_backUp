@@ -8,13 +8,15 @@ use DropBox_backUp\models\Dump;
 require 'vendor/autoload.php';
 $config = require (isset($argv[1])) ? $argv[1] : 'config.php';
 
+$start = microtime(true);
+
 ini_set('max_execution_time', 0);
 date_default_timezone_set('Europe/Moscow');
 
 $log = new Logger('Log');
 $log->pushHandler(new StreamHandler($config['errorLog'], Logger::DEBUG));
 
-$log->info('The script started.');
+$log->info('The script ' . $argv[0] . ' started.');
 
 $dump = new Dump();
 
@@ -31,6 +33,6 @@ try {
     exit();
 }
 
-$log->info('Dump the database is made.');
+$log->info('Dump the database is made in ' . (microtime(true) - $start) . " sec.");
 
 echo "\nI'm done!\n";

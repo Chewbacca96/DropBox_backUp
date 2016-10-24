@@ -61,6 +61,6 @@ try {
     $log->info("Archive is not loaded on DropBox because of an error.");
 }
 
-$log->info("Script finiched in " . (microtime(true) - $start) . " sec.");
+$log->info("Script finished in " . (microtime(true) - $start) . " sec.");
 
 echo "\nI'm done!\n";
