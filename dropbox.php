@@ -26,10 +26,12 @@ date_default_timezone_set('Europe/Moscow');
  * Передача скрипту пути к config.php параметром при запуске
  */
 
+$start = microtime(true);
+
 $log = new Logger('Log');
 $log->pushHandler(new StreamHandler($config['errorLog'], Logger::DEBUG));
 
-$log->info('The script started.');
+$log->info("The script " . $argv[0] . " started.");
 
 try {
     $archive = new Archive(
@@ -52,11 +54,13 @@ $archivePath = $archive->getPath();
 try {
     if ($client->setToDropBox($archivePath, $archiveName)) {
         unlink($archivePath);
-        $log->info('Archive uploaded to DropBox.');
+        $log->info("Archive " . $archiveName . " uploaded to DropBox.");
     }
 } catch (\Exception $e) {
     $log->error('Error: ' . $e->getMessage());
-    $log->info('Archive is not loaded on DropBox because of an error.');
+    $log->info("Archive is not loaded on DropBox because of an error.");
 }
+
+$log->info("Script finiched in " . (microtime(true) - $start) . " sec.");
 
 echo "\nI'm done!\n";
