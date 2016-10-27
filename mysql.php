@@ -2,7 +2,7 @@
 namespace DropBox_backUp;
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogHandler;
 use DropBox_backUp\models\Dump;
 
 require 'vendor/autoload.php';
@@ -13,10 +13,10 @@ $start = microtime(true);
 ini_set('max_execution_time', 0);
 date_default_timezone_set('Europe/Moscow');
 
-$log = new Logger('Log');
-$log->pushHandler(new StreamHandler($config['errorLog'], Logger::DEBUG));
+$syslog = new Logger('Syslog');
+$syslog->pushHandler(new SyslogHandler('backupScript', LOG_USER, Logger::DEBUG));
 
-$log->info('The script ' . $argv[0] . ' started.');
+$syslog->info('The script ' . $argv[0] . ' started.');
 
 $dump = new Dump();
 
@@ -29,10 +29,10 @@ try {
 		$config['sqlOpt']['dump']
 	);
 } catch (DumpException $e) {
-    $log->error('Error: ' . $e->getMessage());
+    $syslog->error('Error: ' . $e->getMessage());
     exit();
 }
 
-$log->info('Dump the database is made in ' . (microtime(true) - $start) . " sec.");
+$syslog->info('Dump ' . $config['sqlOpt']['db'] . ' database is created in ' . $config['sqlOpt']['dump'] . ' for ' . (microtime(true) - $start) . ' sec.');
 
 echo "\nI'm done!\n";

@@ -2,7 +2,7 @@
 namespace DropBox_backUp;
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogHandler;
 use DropBox_backUp\exceptions\WriteException;
 use DropBox_backUp\models\Archive;
 use DropBox_backUp\models\DBoxClient;
@@ -28,10 +28,10 @@ date_default_timezone_set('Europe/Moscow');
 
 $start = microtime(true);
 
-$log = new Logger('Log');
-$log->pushHandler(new StreamHandler($config['errorLog'], Logger::DEBUG));
+$syslog = new Logger('Syslog');
+$syslog->pushHandler(new SyslogHandler('backupScript', LOG_USER, Logger::DEBUG));
 
-$log->info("The script " . $argv[0] . " started.");
+$syslog->info("The script " . $argv[0] . " started.");
 
 try {
     $archive = new Archive(
@@ -39,7 +39,7 @@ try {
         $config['archive']['pathToArchive']
     );
 } catch (WriteException $e) {
-    $log->error('Error: ' . $e->getMessage());
+    $syslog->error('Error: ' . $e->getMessage());
     exit();
 }
 
@@ -54,13 +54,13 @@ $archivePath = $archive->getPath();
 try {
     if ($client->setToDropBox($archivePath, $archiveName)) {
         unlink($archivePath);
-        $log->info("Archive " . $archiveName . " uploaded to DropBox.");
+        $syslog->info("Archive " . $archiveName . " uploaded to DropBox.");
     }
 } catch (\Exception $e) {
-    $log->error('Error: ' . $e->getMessage());
-    $log->info("Archive is not loaded on DropBox because of an error.");
+    $syslog->error('Error: ' . $e->getMessage());
+    $syslog->info("Archive is not loaded on DropBox because of an error.");
 }
 
-$log->info("Script finished in " . (microtime(true) - $start) . " sec.");
+$syslog->info("Script finished in " . (microtime(true) - $start) . " sec.");
 
 echo "\nI'm done!\n";
