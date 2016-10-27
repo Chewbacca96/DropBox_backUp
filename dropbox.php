@@ -29,7 +29,7 @@ date_default_timezone_set('Europe/Moscow');
 $start = microtime(true);
 
 $syslog = new Logger('Syslog');
-$syslog->pushHandler(new SyslogHandler('backupScript', LOG_USER, Logger::DEBUG));
+$syslog->pushHandler(new SyslogHandler('backupScript'));
 
 $syslog->info("The script " . $argv[0] . " started.");
 
